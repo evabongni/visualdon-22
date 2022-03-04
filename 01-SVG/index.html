@@ -13,16 +13,44 @@
   <body>
 
     <h1>Dessiner des formes</h1>
+
     <h2>Rectangle</h2>
 
+    <svg onclick="changeColor()" width="400" height="100">
+      <rect id="rectangle" x="0" y="0" width="400" height="100" fill="red"></rect>
+    </svg>
+
+
     <h2>Donut</h2>
+
+    <svg width="400" height="150"> 
+      <circle id="donutExt" cx="50" cy="50" r="60" fill="white" stroke="black" transform="translate(20, 30)"></circle>
+      <circle id="donutExt" cx="50" cy="50" r="30" fill="white" stroke="black" transform="translate(20, 30)"></circle>
+    </svg>
+
+
 
 
     <h2>Ligne</h2>
 
 
+    <svg width="400" height="50"> 
+      <line x1="20" y1="50" x2="31,92" y2="108,8" stroke="black"></line>
+    </svg>
+
+
+
     <h2>Path</h2>
 
+    <svg width="150" height="75">
+      <path d="M 50 10 H 30 V 50 H 50 M 30 30 H 40" fill="none" stroke="steelblue" stroke-width="5"></path>
+        <circle r="3" fill="red">
+          <animateMotion dur="10s" repeatCount="indefinite" path="M 50 10 H 30 V 50 H 50 M 30 30 H 40"/>
+        </circle>
+      <path d="M 60 10 L 75 50 L 90 10" fill="none" stroke="steelblue" stroke-width="5"></path>
+      <path d="M 100 50 L 115 10 L 130 50 M 106 30 H 124" fill="none" stroke="steelblue" stroke-width="5"></path>
+
+    </svg>
 
     <h1>Animer des formes</h1>
 
