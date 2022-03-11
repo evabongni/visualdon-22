@@ -22,7 +22,7 @@ Créez 3 cercles de 40px de rayon et placez-les respectivement à : (50,50), (15
 
 ## Append
 Rajoutez du texte en dessous de chaque cercle
-
+V
 ## Événements
 Alignez verticalement les cercles en cliquant sur le dernier cercle
 
