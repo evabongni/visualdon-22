@@ -119,25 +119,25 @@ const legend = legende
 	.attr("class", "legend")
 	.style("display", "flex")
 	.style("flex-direction", "row");
-// set data
+
 const countries = new Map();
 data.forEach((d) => {
 	countries.set(d.country, d);
 });
-// create svg
+
 const width2 = 800;
 const height2 = 600;
 const svgMap = legende
 	.append("svg")
 	.attr("width", width2)
 	.attr("height", height2);
-// Map and projection
+
 const projection = d3
 	.geoNaturalEarth1()
 	.scale(width2 / 1.3 / Math.PI - 50)
 	.translate([width2 / 2, height2 / 2]);
-// color interval
-const intervalsCount = 9; // max value is 9
+
+const intervalsCount = 9; 
 const domainInterval = yMax / intervalsCount;
 const intervals = [];
 for (let i = 0; i <= intervalsCount; i++) {
@@ -145,16 +145,16 @@ for (let i = 0; i <= intervalsCount; i++) {
 		intervals.push(i * domainInterval);
 	}
 }
-// color scale
+
 const colorScale = d3
 	.scaleThreshold()
 	.domain([...intervals])
 	.range(d3.schemeOranges[intervalsCount]);
-// Load external data and boot
+
 d3.json(
 	"https://raw.githubusercontent.com/holtzy/D3-graph-gallery/master/DATA/world.geojson"
 ).then(function (topo) {
-	// Draw  map
+
 	svgMap
 		.append("g")
 		.selectAll("path")
@@ -166,7 +166,7 @@ d3.json(
 		.attr("d", d3.geoPath().projection(projection))
 		.style("stroke", "rgba(0,0,0,0.5)");
 });
-// Draw  legend
+
 let i = 0;
 intervals.forEach((d) => {
 	legend
@@ -193,3 +193,84 @@ legend
 	.append("text")
 	.text("no data")
 	.style("color", "white");
+
+
+
+
+///////////////////////////Animation/////////////////////////////////////////////////////////////////
+
+function getData(currentYear) {
+	const currentvie = vie.map((year) => {
+		return { country: year["country"], vie: year[currentYear] };
+	});
+	const currentPop = pop.map((year) => {
+		return { country: year["country"], pop: year[currentYear] };
+	});
+	const currentpib = pib.map((year) => {
+		return { country: year["country"], pib: year[currentYear] };
+	});
+
+	let data = [];
+	for (let i = 0; i < pib.length; i++) {
+		data.push({
+			country: currentpib[i].country,
+			pop: cleanData(currentPop[i].pop),
+			vie: cleanData(currentvie[i].vie),
+			pib: cleanData(currentpib[i].pib),
+		});
+	}
+	return data;
+}
+
+
+let t = d3.transition().duration(1000).ease(d3.easeLinear);
+const firstYear = 1980;
+const lastYear = 2021;
+const svg2 = d3.select("body").append("svg");
+let currentYear = firstYear;
+
+svg2
+	.attr("width", width + margin.left + margin.right)
+	.attr("height", height + margin.top + margin.bottom)
+	.style("margin", "50px");
+
+svg2
+	.append("g")
+	.attr("transform", "translate(20," + newHeight + ")")
+	.call(d3.axisBottom(x));
+
+svg2
+	.append("g")
+	.attr("transform", "translate(" + 20 + ",10)")
+	.call(d3.axisLeft(y));
+
+(function draw() {
+	const data = getData(currentYear);
+
+	svg2
+		.selectAll("circle")
+		.data(data)
+		.join(
+			(enter) =>
+				enter
+					.append("circle")
+					.attr("cx", (d) => x(d.pib))
+					.attr("cy", (d) => y(d.vie))
+					.attr("r", (d) => r(d.pop))
+					.attr("class", (d) => `countryCircle ${d.country}`),
+			(update) =>
+				update
+					.transition()
+					.duration(1000)
+					.attr("cx", (d) => x(d.pib))
+					.attr("cy", (d) => y(d.vie))
+					.attr("r", (d) => r(d.pop)),
+			(exit) => exit.attr("r", (d) => r(d.pop)).remove()
+		)
+		.style("fill", "rgba(100, 0, 0, 0.4)")
+		.attr("transform", "translate(100, 10)");
+	if (currentYear < lastYear) {
+		currentYear++;
+		setTimeout(draw, 1000);
+	}
+})();
